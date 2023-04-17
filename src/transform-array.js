@@ -16,26 +16,27 @@ const {
  * 
  */
 function transform(arr) {
+  let newArr = [];
+  if (!Array.isArray(arr)) throw new Error(`'arr' parameter must be an instance of the Array!`);
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === '--discard-next') {
-      let result = arr.slice(0, i) + "," + arr.slice(i + 2);
-      let newArray = result;
-      return newArray;
-    } else if (arr[i] === '--discard-prev') {
-      let result = arr.slice(0, i - 1) + "," + arr.slice(i + 1);
-      let newArray = result;
-      return newArray;
-    } else if (arr[i] === '--double-next' ) {
-      let result = arr.slice(0, i) + "," + arr[i + 1] + "," + arr.slice(i + 1);
-      let newArray = result;
-      return newArray;
-    } else if (arr[i] === '--double-prev') {
-      let result = arr.slice(0, i) + "," + arr[i - 1] + "," + arr.slice(i + 1);
-      let newArray = result;
-
-      return newArray;
-    }
+    switch (arr[i]) {
+      case '--discard-next':
+        if (arr.length > i+1) i++;
+        break;
+      case '--discard-prev':
+        if (newArr.length > 0 && newArr[newArr.length - 1] === arr[i - 1] ) newArr.pop();
+         break;
+      case '--double-next':
+        if (arr.length > i+1) newArr.push(arr[i + 1]);
+        break;
+      case '--double-prev':
+        if (arr[i - 1] && arr[i - 2] != '--discard-next') newArr.push(arr[i - 1]);
+        break;
+      default:
+        newArr.push(arr[i]);
+   }
   }
+  return newArr;
 }
 
 module.exports = {
